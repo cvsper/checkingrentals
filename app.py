@@ -82,6 +82,31 @@ def get_all_cached_listings():
         all_listings.extend(listings)
     return all_listings
 
+def migrate_cached_listings_to_database():
+    """Migrate all cached listings to database (one-time operation)"""
+    if not supabase_logger.is_connected():
+        print("❌ Cannot migrate: Supabase not connected")
+        return False
+    
+    try:
+        migrated_count = 0
+        for user_id, listings in GLOBAL_USER_LISTINGS.items():
+            for listing in listings:
+                # Try to create listing in database
+                result = supabase_logger.create_listing(listing.copy())
+                if result:
+                    migrated_count += 1
+                    print(f"✅ Migrated listing: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
+                else:
+                    print(f"❌ Failed to migrate: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
+        
+        print(f"🎉 Migration complete! Migrated {migrated_count} listings to database")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Migration failed: {e}")
+        return False
+
 def save_user_listings_to_cache(user_id, listings):
     """Save user listings to global memory cache"""
     try:
@@ -297,6 +322,26 @@ def debug_session():
         'all_listings_count': len(session.get('all_listings', [])),
         'user_listings': session.get('user_listings', []),
         'all_listings': session.get('all_listings', [])
+    })
+
+@app.route('/migrate-database')
+def migrate_database():
+    """Migrate cached listings to database (admin only)"""
+    if not supabase_logger.is_connected():
+        return jsonify({
+            'success': False,
+            'message': 'Supabase not connected. Please configure environment variables first.',
+            'cached_listings': len(get_all_cached_listings())
+        })
+    
+    success = migrate_cached_listings_to_database()
+    cached_count = len(get_all_cached_listings())
+    
+    return jsonify({
+        'success': success,
+        'message': f'Migration {"completed" if success else "failed"}',
+        'cached_listings_found': cached_count,
+        'supabase_connected': supabase_logger.is_connected()
     })
 
 @app.route('/stripe-webhook', methods=['POST'])
