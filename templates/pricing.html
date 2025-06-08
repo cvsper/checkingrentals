@@ -71,6 +71,13 @@
                                     Start Subscription
                                 </button>
                             </form>
+                            
+                            <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                                <p style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #666;">For testing purposes:</p>
+                                <a href="{{ url_for('demo_payment') }}" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    Demo Access (Skip Payment)
+                                </a>
+                            </div>
                         {% else %}
                             <a href="{{ url_for('login') }}" class="pricing-btn">
                                 Login to Subscribe

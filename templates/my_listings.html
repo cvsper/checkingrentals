@@ -52,10 +52,16 @@
 
                             <div class="listing-image">
                                 {% if listing.images and listing.images|length > 0 %}
-                                    <img src="{{ listing.images[0] }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}">
+                                    <img src="{{ listing.images[0] }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" class="listing-thumbnail">
+                                    {% if listing.images|length > 1 %}
+                                        <div class="image-count">
+                                            📷 {{ listing.images|length }}
+                                        </div>
+                                    {% endif %}
                                 {% else %}
                                     <div class="placeholder-image">
                                         <span class="car-emoji">🚗</span>
+                                        <p>No image</p>
                                     </div>
                                 {% endif %}
                             </div>

@@ -14,10 +14,10 @@
             </div>
             <div class="nav-links">
                 <a href="{{ url_for('index') }}" class="nav-link">Check Eligibility</a>
-                <a href="#" class="nav-link">How it works</a>
-                <a href="#" class="nav-link">About</a>
                 {% if session.user_id %}
                     <a href="{{ url_for('my_listings') }}" class="nav-link">My Listings</a>
+                    <a href="{{ url_for('seller_requests') }}" class="nav-link">Contact Requests</a>
+                    <a href="{{ url_for('buyer_requests') }}" class="nav-link">My Requests</a>
                     <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
                 {% else %}
                     <a href="{{ url_for('login') }}" class="nav-link">Login</a>
@@ -59,7 +59,7 @@
                         <div class="listing-card">
                             <div class="listing-image">
                                 {% if listing.images and listing.images|length > 0 %}
-                                    <img src="{{ listing.images[0] }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}">
+                                    <img src="{{ listing.images[0] }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}" class="listing-thumbnail">
                                 {% else %}
                                     <div class="placeholder-image">
                                         <span class="car-emoji">🚗</span>
@@ -69,6 +69,11 @@
                                 <div class="eligible-badge">
                                     ✅ Turo Eligible
                                 </div>
+                                {% if listing.images and listing.images|length > 1 %}
+                                    <div class="image-count">
+                                        📷 {{ listing.images|length }} photos
+                                    </div>
+                                {% endif %}
                             </div>
 
                             <div class="listing-content">
@@ -111,9 +116,19 @@
                                     <a href="https://turo.com" target="_blank" class="btn-primary">
                                         List on Turo
                                     </a>
-                                    <button class="btn-secondary contact-btn" onclick="showContactInfo('{{ listing.id }}')">
-                                        Contact Owner
-                                    </button>
+                                    {% if session.user_id and session.is_paid %}
+                                        <button class="btn-secondary contact-btn" onclick="showContactModal('{{ listing.id }}', '{{ listing.year }} {{ listing.make }} {{ listing.model }}')">
+                                            Contact Seller
+                                        </button>
+                                    {% elif session.user_id %}
+                                        <button class="btn-secondary contact-btn disabled" title="Upgrade to Pro to contact sellers" disabled>
+                                            Contact Seller
+                                        </button>
+                                    {% else %}
+                                        <a href="{{ url_for('login') }}" class="btn-secondary">
+                                            Login to Contact
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -140,9 +155,52 @@
         </div>
     </footer>
 
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Contact Seller</h2>
+                <span class="close" onclick="closeContactModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="contactVehicleInfo">You're about to send a contact request for this vehicle.</p>
+                <form id="contactForm" method="POST" action="{{ url_for('contact_seller') }}">
+                    <input type="hidden" id="contactListingId" name="listing_id" value="">
+                    <div class="form-group">
+                        <label for="contactMessage">Message (optional):</label>
+                        <textarea id="contactMessage" name="message" class="form-textarea" rows="4" placeholder="Hi, I'm interested in your vehicle. When would be a good time to discuss?"></textarea>
+                    </div>
+                    <div class="contact-warning">
+                        <p><strong>Note:</strong> The seller will be notified and can choose to accept or decline your request. If accepted, you'll be able to communicate directly.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeContactModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Send Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function showContactInfo(listingId) {
-            alert('Contact feature coming soon! For now, check the vehicle details and consider listing similar vehicles on Turo.');
+        function showContactModal(listingId, vehicleInfo) {
+            document.getElementById('contactListingId').value = listingId;
+            document.getElementById('contactVehicleInfo').textContent = 
+                `You're about to send a contact request for the ${vehicleInfo}. The owner will be notified and may accept or decline.`;
+            document.getElementById('contactModal').style.display = 'block';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('contactForm').reset();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('contactModal');
+            if (event.target === modal) {
+                closeContactModal();
+            }
         }
     </script>
 </body>

@@ -23,3 +23,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Cache directory (user data)
+cache/
+
+# Uploaded files
+static/uploads/

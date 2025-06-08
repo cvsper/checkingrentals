@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Requests - Turo Marketplace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('marketplace') }}" class="nav-link">Marketplace</a>
+                <a href="{{ url_for('my_listings') }}" class="nav-link">My Listings</a>
+                <a href="{{ url_for('my_requests') }}" class="nav-link">My Requests</a>
+                <a href="{{ url_for('index') }}" class="nav-link">Check Vehicle</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="requests-content">
+            <div class="requests-header">
+                <h1>Contact Requests</h1>
+                <p>Manage requests from potential buyers</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if requests %}
+                <div class="requests-grid">
+                    {% for request in requests %}
+                        <div class="request-card">
+                            <div class="request-header">
+                                <div class="request-status">
+                                    {% if request.status == 'pending' %}
+                                        <span class="status-badge pending">🕐 Pending</span>
+                                    {% elif request.status == 'accepted' %}
+                                        <span class="status-badge accepted">✅ Accepted</span>
+                                    {% elif request.status == 'declined' %}
+                                        <span class="status-badge declined">❌ Declined</span>
+                                    {% endif %}
+                                </div>
+                                <div class="request-date">
+                                    {{ request.created_at[:10] if request.created_at else 'Unknown' }}
+                                </div>
+                            </div>
+
+                            <div class="request-content">
+                                <div class="vehicle-info">
+                                    <h3>{{ request.listings.year if request.listings else 'Unknown' }} {{ request.listings.make if request.listings else '' }} {{ request.listings.model if request.listings else '' }}</h3>
+                                    <p class="location">📍 {{ request.listings.location if request.listings else 'Location not specified' }}</p>
+                                </div>
+
+                                <div class="buyer-info">
+                                    <p><strong>From:</strong> {{ request.buyers.email if request.buyers else 'Unknown buyer' }}</p>
+                                    {% if request.message %}
+                                        <div class="request-message">
+                                            <strong>Message:</strong>
+                                            <p>"{{ request.message }}"</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if request.status == 'pending' %}
+                                    <div class="request-actions">
+                                        <a href="{{ url_for('respond_to_request', request_id=request.id, action='accept') }}" 
+                                           class="btn-primary accept-btn"
+                                           onclick="return confirm('Accept this contact request? The buyer will be notified.')">
+                                            Accept Request
+                                        </a>
+                                        <a href="{{ url_for('respond_to_request', request_id=request.id, action='decline') }}" 
+                                           class="btn-secondary decline-btn"
+                                           onclick="return confirm('Decline this contact request?')">
+                                            Decline
+                                        </a>
+                                    </div>
+                                {% elif request.status == 'accepted' %}
+                                    <div class="contact-info">
+                                        <p><strong>✅ Request Accepted</strong></p>
+                                        <p>You can now communicate with the buyer at: <a href="mailto:{{ request.buyers.email if request.buyers else '' }}">{{ request.buyers.email if request.buyers else 'Email not available' }}</a></p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-requests">
+                    <div class="no-requests-icon">📬</div>
+                    <h2>No Contact Requests</h2>
+                    <p>You haven't received any contact requests yet. When buyers are interested in your vehicles, they'll appear here.</p>
+                    <a href="{{ url_for('my_listings') }}" class="btn-primary">View My Listings</a>
+                </div>
+            {% endif %}
+
+            <div class="requests-info">
+                <h2>How Contact Requests Work</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h3>📧 You Get Notified</h3>
+                        <p>When a buyer is interested in your vehicle, you'll receive a contact request here.</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>✅ You Choose</h3>
+                        <p>Accept or decline requests based on your preferences. You're in control.</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>💬 Direct Communication</h3>
+                        <p>Once accepted, you can communicate directly with the buyer via email.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>
