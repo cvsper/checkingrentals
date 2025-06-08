@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Your Vehicle - Turo Marketplace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('marketplace') }}" class="nav-link">← Back to Marketplace</a>
+                <a href="{{ url_for('my_listings') }}" class="nav-link">My Listings</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="listing-form-content">
+            <div class="form-header">
+                <h1>List Your Vehicle</h1>
+                <p>Create a marketplace listing for your Turo-eligible vehicle</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="vehicle-summary">
+                <h2>Vehicle Information</h2>
+                <div class="vehicle-details">
+                    <div class="detail-row">
+                        <span class="label">VIN:</span>
+                        <span class="value">{{ last_check.vin }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Vehicle:</span>
+                        <span class="value">{{ last_check.vehicle_info.year }} {{ last_check.vehicle_info.make }} {{ last_check.vehicle_info.model }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Mileage:</span>
+                        <span class="value">{{ "{:,}".format(last_check.mileage) }} miles</span>
+                    </div>
+                    {% if last_check.earnings_estimate %}
+                        <div class="detail-row earnings-row">
+                            <span class="label">Estimated Earnings:</span>
+                            <span class="value earnings">${{ last_check.earnings_estimate }}/month</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <form class="listing-form" method="POST" action="{{ url_for('create_listing') }}" enctype="multipart/form-data">
+                <div class="form-section">
+                    <h3>Listing Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input 
+                            type="text" 
+                            name="location" 
+                            id="location"
+                            placeholder="City, State or ZIP Code"
+                            class="form-input"
+                            required
+                        >
+                        <small>This helps potential Turo hosts find vehicles in their area</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Availability</label>
+                        <select name="availability" id="availability" class="form-select">
+                            <option value="available_now">Available Now</option>
+                            <option value="available_next_month">Available Next Month</option>
+                            <option value="available_future">Available in Future</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description (Optional)</label>
+                        <textarea 
+                            name="description" 
+                            id="description"
+                            placeholder="Add any additional details about your vehicle, its condition, features, etc."
+                            class="form-textarea"
+                            rows="4"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Vehicle Photos</h3>
+                    <p>Upload 1-5 photos of your vehicle to attract potential Turo hosts</p>
+                    
+                    <div class="form-group">
+                        <label for="images">Vehicle Images</label>
+                        <input 
+                            type="file" 
+                            name="images" 
+                            id="images"
+                            accept="image/*"
+                            multiple
+                            class="form-file"
+                        >
+                        <small>Supported formats: JPG, PNG, GIF. Max 5 images.</small>
+                    </div>
+
+                    <div class="photo-tips">
+                        <h4>Photo Tips:</h4>
+                        <ul>
+                            <li>Include exterior shots from multiple angles</li>
+                            <li>Show the interior, especially if it's in good condition</li>
+                            <li>Highlight any special features or upgrades</li>
+                            <li>Use good lighting and avoid blurry images</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        Create Listing
+                    </button>
+                    <a href="{{ url_for('marketplace') }}" class="btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+
+            <div class="listing-info">
+                <h3>What Happens Next?</h3>
+                <div class="info-steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <h4>Listing Goes Live</h4>
+                            <p>Your vehicle will appear in our public marketplace immediately</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h4>Connect with Hosts</h4>
+                            <p>Potential Turo hosts can see your vehicle and earnings potential</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h4>Manage Listings</h4>
+                            <p>Update, edit, or deactivate your listings anytime from your dashboard</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>

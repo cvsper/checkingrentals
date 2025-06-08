@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Marketplace - Turo Eligible Cars</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">Check Eligibility</a>
+                <a href="#" class="nav-link">How it works</a>
+                <a href="#" class="nav-link">About</a>
+                {% if session.user_id %}
+                    <a href="{{ url_for('my_listings') }}" class="nav-link">My Listings</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="marketplace-content">
+            <div class="marketplace-header">
+                <h1>Turo-Eligible Vehicle Marketplace</h1>
+                <p>Discover pre-qualified vehicles ready for Turo hosting</p>
+                
+                {% if not session.user_id or not session.is_paid %}
+                    <div class="marketplace-cta">
+                        <p>Want to list your vehicle? 
+                        {% if not session.user_id %}
+                            <a href="{{ url_for('login') }}">Login</a> and 
+                        {% endif %}
+                        <a href="{{ url_for('pricing') }}">upgrade to Pro</a> to get started!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if listings %}
+                <div class="listings-grid">
+                    {% for listing in listings %}
+                        <div class="listing-card">
+                            <div class="listing-image">
+                                {% if listing.images and listing.images|length > 0 %}
+                                    <img src="{{ listing.images[0] }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        <span class="car-emoji">🚗</span>
+                                        <p>No photo available</p>
+                                    </div>
+                                {% endif %}
+                                <div class="eligible-badge">
+                                    ✅ Turo Eligible
+                                </div>
+                            </div>
+
+                            <div class="listing-content">
+                                <div class="listing-header">
+                                    <h3>{{ listing.year }} {{ listing.make }} {{ listing.model }}</h3>
+                                    <span class="mileage">{{ "{:,}".format(listing.mileage) }} miles</span>
+                                </div>
+
+                                <div class="listing-location">
+                                    <span class="location-icon">📍</span>
+                                    <span>{{ listing.location }}</span>
+                                </div>
+
+                                {% if listing.description %}
+                                    <div class="listing-description">
+                                        <p>{{ listing.description[:100] }}{% if listing.description|length > 100 %}...{% endif %}</p>
+                                    </div>
+                                {% endif %}
+
+                                <div class="listing-earnings">
+                                    <div class="earnings-box">
+                                        <span class="earnings-label">Estimated Earnings</span>
+                                        <span class="earnings-value">Up to ${{ listing.estimated_earnings }}/mo</span>
+                                    </div>
+                                </div>
+
+                                <div class="listing-availability">
+                                    <span class="availability-status {{ listing.availability or 'available_now' }}">
+                                        {% if listing.availability == 'available_now' %}
+                                            🟢 Available Now
+                                        {% elif listing.availability == 'available_next_month' %}
+                                            🟡 Available Next Month
+                                        {% else %}
+                                            🟢 Available
+                                        {% endif %}
+                                    </span>
+                                </div>
+
+                                <div class="listing-actions">
+                                    <a href="https://turo.com" target="_blank" class="btn-primary">
+                                        List on Turo
+                                    </a>
+                                    <button class="btn-secondary contact-btn" onclick="showContactInfo('{{ listing.id }}')">
+                                        Contact Owner
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-listings">
+                    <div class="no-listings-icon">🚗</div>
+                    <h2>No Vehicles Listed Yet</h2>
+                    <p>Be the first to list your Turo-eligible vehicle in our marketplace!</p>
+                    {% if session.user_id and session.is_paid %}
+                        <a href="{{ url_for('index') }}" class="btn-primary">Check Vehicle Eligibility</a>
+                    {% else %}
+                        <a href="{{ url_for('pricing') }}" class="btn-primary">Get Started</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showContactInfo(listingId) {
+            alert('Contact feature coming soon! For now, check the vehicle details and consider listing similar vehicles on Turo.');
+        }
+    </script>
+</body>
+</html>

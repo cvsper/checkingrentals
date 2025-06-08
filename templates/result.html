@@ -114,7 +114,22 @@
                         <div class="action-buttons">
                             <a href="{{ url_for('index') }}" class="btn-secondary">Check Another Vehicle</a>
                             {% if eligibility_result.eligible %}
-                                <a href="#" class="btn-primary">List on Turo</a>
+                                {% if earnings_estimate %}
+                                    <div class="earnings-highlight">
+                                        <h3>💰 Estimated Monthly Earnings</h3>
+                                        <p class="earnings-amount">${{ earnings_estimate }}/month on Turo</p>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if session.user_id and session.is_paid %}
+                                    <a href="{{ url_for('list_vehicle') }}" class="btn-primary">List in Marketplace</a>
+                                {% elif session.user_id %}
+                                    <a href="{{ url_for('pricing') }}" class="btn-primary">Upgrade to List Vehicle</a>
+                                {% else %}
+                                    <a href="{{ url_for('login') }}" class="btn-primary">Login to List Vehicle</a>
+                                {% endif %}
+                                
+                                <a href="{{ url_for('marketplace') }}" class="btn-secondary">View Marketplace</a>
                             {% endif %}
                         </div>
                     </div>

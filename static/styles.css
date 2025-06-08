@@ -588,6 +588,714 @@ body {
     font-size: 0.9rem;
 }
 
+/* Marketplace styles */
+.marketplace-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.marketplace-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.marketplace-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.marketplace-cta {
+    background-color: #f0f8ff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.listing-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.listing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.listing-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.listing-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.placeholder-image .car-emoji {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.eligible-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #10b981;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.listing-content {
+    padding: 1.5rem;
+}
+
+.listing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.listing-header h3 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.mileage {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.listing-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.listing-description {
+    margin-bottom: 1rem;
+}
+
+.listing-description p {
+    color: #555;
+    line-height: 1.4;
+}
+
+.earnings-box {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.earnings-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #166534;
+    margin-bottom: 0.25rem;
+}
+
+.earnings-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #166534;
+}
+
+.listing-availability {
+    margin-bottom: 1.5rem;
+}
+
+.availability-status {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.listing-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.listing-actions .btn-primary,
+.listing-actions .btn-secondary {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+}
+
+/* Authentication styles */
+.auth-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.auth-btn {
+    width: 100%;
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-btn:hover {
+    background-color: #333;
+}
+
+.auth-info {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.auth-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+}
+
+.login-graphic {
+    text-align: center;
+    color: #666;
+}
+
+.key-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* Pricing styles */
+.pricing-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.pricing-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.pricing-card {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4rem;
+}
+
+.pricing-plan {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.plan-header {
+    margin-bottom: 2rem;
+}
+
+.plan-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.plan-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.period {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.plan-features {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.plan-features h3 {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.plan-features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.plan-features li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.plan-features li:last-child {
+    border-bottom: none;
+}
+
+.pricing-btn {
+    width: 100%;
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s;
+}
+
+.pricing-btn:hover {
+    background-color: #333;
+}
+
+.plan-note {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.pricing-benefits {
+    margin-bottom: 4rem;
+}
+
+.pricing-benefits h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.benefit-item {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.benefit-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.pricing-faq {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.faq-item {
+    margin-bottom: 2rem;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+}
+
+.faq-item h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+/* Listing form styles */
+.listing-form-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.vehicle-summary {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.vehicle-details {
+    margin-top: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-row.earnings-row {
+    background-color: #f0fdf4;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    border: 1px solid #bbf7d0;
+}
+
+.detail-row .label {
+    font-weight: 600;
+    color: #666;
+}
+
+.detail-row .value {
+    color: #000;
+}
+
+.detail-row .earnings {
+    color: #166534;
+    font-weight: 700;
+}
+
+.listing-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.form-select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.form-file {
+    width: 100%;
+    padding: 1rem;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.photo-tips {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.photo-tips h4 {
+    margin-bottom: 0.5rem;
+}
+
+.photo-tips ul {
+    margin-left: 1.5rem;
+}
+
+.photo-tips li {
+    margin-bottom: 0.25rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.listing-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.info-steps {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.step {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+}
+
+.step-number {
+    background-color: #000;
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-content h4 {
+    margin-bottom: 0.25rem;
+}
+
+/* My listings styles */
+.my-listings-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.listings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.my-listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.my-listing-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.my-listing-card.inactive {
+    opacity: 0.6;
+}
+
+.listing-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.my-listing-card .listing-image {
+    height: 150px;
+}
+
+.my-listing-card .listing-details {
+    padding: 1.5rem;
+}
+
+.my-listing-card h3 {
+    margin-bottom: 1rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item .label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.detail-item .value {
+    font-weight: 500;
+    color: #333;
+}
+
+.listings-summary {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 3rem;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.listings-tips {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.tip-item {
+    padding: 1rem;
+    border-left: 4px solid #000;
+    background-color: #f8f9fa;
+}
+
+.tip-item h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Earnings highlight */
+.earnings-highlight {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 2px solid #bbf7d0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.earnings-highlight h3 {
+    margin-bottom: 0.5rem;
+    color: #166534;
+}
+
+.earnings-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #166534;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .content-grid {
@@ -613,5 +1321,35 @@ body {
     
     .checks-table-container {
         overflow-x: auto;
+    }
+    
+    .listings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .my-listings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .listings-header {
+        flex-direction: column;
+        align-items: start;
+        gap: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
     }
 }

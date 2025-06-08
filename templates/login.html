@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Turo Vehicle Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">← Back to checker</a>
+                <a href="{{ url_for('marketplace') }}" class="nav-link">Marketplace</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="content-grid">
+            <div class="content-left">
+                <div class="auth-content">
+                    <h1>Login to Your Account</h1>
+                    <p>Access the vehicle marketplace and list your eligible cars.</p>
+
+                    <form class="auth-form" method="POST">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input 
+                                type="email" 
+                                name="email" 
+                                id="email"
+                                placeholder="Enter your email"
+                                class="form-input"
+                                required
+                            >
+                        </div>
+
+                        <button type="submit" class="auth-btn">
+                            Login
+                        </button>
+                    </form>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div class="flash-messages">
+                                {% for category, message in messages %}
+                                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    <div class="auth-info">
+                        <p><strong>Note:</strong> We use a simple email-based login system. No password required - just enter your email to access your account.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-right">
+                <div class="auth-illustration">
+                    <div class="login-graphic">
+                        <div class="key-icon">🔑</div>
+                        <h2>Secure Access</h2>
+                        <p>Login to access marketplace features</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>

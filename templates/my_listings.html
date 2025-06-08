@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings - Turo Marketplace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('marketplace') }}" class="nav-link">Marketplace</a>
+                <a href="{{ url_for('index') }}" class="nav-link">Check Vehicle</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="my-listings-content">
+            <div class="listings-header">
+                <h1>My Vehicle Listings</h1>
+                <p>Manage your marketplace listings</p>
+                <a href="{{ url_for('index') }}" class="btn-primary">Add New Vehicle</a>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if listings %}
+                <div class="my-listings-grid">
+                    {% for listing in listings %}
+                        <div class="my-listing-card {{ 'inactive' if not listing.is_active }}">
+                            <div class="listing-status">
+                                {% if listing.is_active %}
+                                    <span class="status-badge active">🟢 Active</span>
+                                {% else %}
+                                    <span class="status-badge inactive">🔴 Inactive</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="listing-image">
+                                {% if listing.images and listing.images|length > 0 %}
+                                    <img src="{{ listing.images[0] }}" alt="{{ listing.year }} {{ listing.make }} {{ listing.model }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        <span class="car-emoji">🚗</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="listing-details">
+                                <h3>{{ listing.year }} {{ listing.make }} {{ listing.model }}</h3>
+                                
+                                <div class="detail-grid">
+                                    <div class="detail-item">
+                                        <span class="label">Mileage:</span>
+                                        <span class="value">{{ "{:,}".format(listing.mileage) }} miles</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">Location:</span>
+                                        <span class="value">{{ listing.location }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">Earnings:</span>
+                                        <span class="value">${{ listing.estimated_earnings }}/mo</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label">Listed:</span>
+                                        <span class="value">{{ listing.created_at[:10] if listing.created_at else 'Unknown' }}</span>
+                                    </div>
+                                </div>
+
+                                {% if listing.description %}
+                                    <div class="listing-description">
+                                        <p>{{ listing.description[:150] }}{% if listing.description|length > 150 %}...{% endif %}</p>
+                                    </div>
+                                {% endif %}
+
+                                <div class="listing-actions">
+                                    {% if listing.is_active %}
+                                        <a href="{{ url_for('toggle_listing', listing_id=listing.id) }}" class="btn-secondary">
+                                            Deactivate
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('toggle_listing', listing_id=listing.id) }}" class="btn-primary">
+                                            Reactivate
+                                        </a>
+                                    {% endif %}
+                                    
+                                    <button class="btn-secondary" onclick="editListing('{{ listing.id }}')">
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="listings-summary">
+                    <div class="summary-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ listings|length }}</span>
+                            <span class="stat-label">Total Listings</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">{{ listings|selectattr('is_active')|list|length }}</span>
+                            <span class="stat-label">Active Listings</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${{ listings|sum(attribute='estimated_earnings') if listings else 0 }}</span>
+                            <span class="stat-label">Total Est. Earnings/mo</span>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-listings">
+                    <div class="no-listings-icon">📝</div>
+                    <h2>No Listings Yet</h2>
+                    <p>You haven't created any vehicle listings yet. Start by checking a vehicle's eligibility!</p>
+                    <a href="{{ url_for('index') }}" class="btn-primary">Check Vehicle Eligibility</a>
+                </div>
+            {% endif %}
+
+            <div class="listings-tips">
+                <h2>Tips for Better Listings</h2>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <h3>📸 Quality Photos</h3>
+                        <p>High-quality photos get 3x more interest from potential Turo hosts</p>
+                    </div>
+                    <div class="tip-item">
+                        <h3>📍 Accurate Location</h3>
+                        <p>Be specific about your location to help hosts find vehicles nearby</p>
+                    </div>
+                    <div class="tip-item">
+                        <h3>📝 Detailed Description</h3>
+                        <p>Include condition details, features, and any special characteristics</p>
+                    </div>
+                    <div class="tip-item">
+                        <h3>🔄 Keep Updated</h3>
+                        <p>Update availability status and deactivate when vehicle is no longer available</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+
+    <script>
+        function editListing(listingId) {
+            alert('Edit functionality coming soon! For now, you can deactivate and create a new listing.');
+        }
+    </script>
+</body>
+</html>

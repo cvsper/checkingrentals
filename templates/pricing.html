@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Turo Vehicle Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">← Back to checker</a>
+                <a href="{{ url_for('marketplace') }}" class="nav-link">Marketplace</a>
+                {% if session.user_id %}
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="pricing-content">
+            <div class="pricing-header">
+                <h1>Marketplace Access</h1>
+                <p>List your eligible vehicles and connect with potential Turo hosts</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="pricing-card">
+                <div class="pricing-plan">
+                    <div class="plan-header">
+                        <h2>Marketplace Pro</h2>
+                        <div class="plan-price">
+                            <span class="price">$9.99</span>
+                            <span class="period">/month</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-features">
+                        <h3>What's Included:</h3>
+                        <ul>
+                            <li>✅ List unlimited eligible vehicles</li>
+                            <li>✅ Upload up to 5 photos per listing</li>
+                            <li>✅ Earnings estimates for your vehicles</li>
+                            <li>✅ Location-based listing visibility</li>
+                            <li>✅ Direct contact with potential Turo hosts</li>
+                            <li>✅ Listing management dashboard</li>
+                            <li>✅ Priority support</li>
+                        </ul>
+                    </div>
+
+                    <div class="plan-cta">
+                        {% if session.user_id %}
+                            <form method="POST" action="{{ url_for('create_checkout_session') }}">
+                                <button type="submit" class="pricing-btn">
+                                    Start Subscription
+                                </button>
+                            </form>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="pricing-btn">
+                                Login to Subscribe
+                            </a>
+                        {% endif %}
+                        
+                        <p class="plan-note">Cancel anytime. No setup fees.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pricing-benefits">
+                <h2>Why Use Our Marketplace?</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🎯</div>
+                        <h3>Pre-Qualified Vehicles</h3>
+                        <p>All listed vehicles have passed Turo eligibility checks</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💰</div>
+                        <h3>Earnings Estimates</h3>
+                        <p>See potential monthly earnings for each vehicle</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🌍</div>
+                        <h3>Location-Based</h3>
+                        <p>Find vehicles in your area for Turo hosting</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">⚡</div>
+                        <h3>Quick Listing</h3>
+                        <p>List your vehicle immediately after eligibility check</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pricing-faq">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <h3>What happens after I subscribe?</h3>
+                    <p>You'll get immediate access to list vehicles that pass our eligibility check. You can upload photos, add descriptions, and connect with potential Turo hosts.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I cancel anytime?</h3>
+                    <p>Yes, you can cancel your subscription at any time. Your listings will remain active until the end of your billing period.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is this affiliated with Turo?</h3>
+                    <p>No, this is an independent marketplace tool. We help connect vehicle owners with potential Turo hosts, but we're not affiliated with Turo Inc.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>
