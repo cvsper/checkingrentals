@@ -72,31 +72,33 @@ def save_uploaded_image(listing_id, image_file, filename):
         print(f"Failed to save image locally: {e}")
         return None
 
+# Global in-memory storage for listings (survives across requests)
+GLOBAL_USER_LISTINGS = {}
+
+def get_all_cached_listings():
+    """Get all listings from all users in the global cache"""
+    all_listings = []
+    for user_id, listings in GLOBAL_USER_LISTINGS.items():
+        all_listings.extend(listings)
+    return all_listings
+
 def save_user_listings_to_cache(user_id, listings):
-    """Save user listings to a file cache"""
+    """Save user listings to global memory cache"""
     try:
-        cache_dir = os.path.join('cache', 'user_listings')
-        os.makedirs(cache_dir, exist_ok=True)
-        
-        cache_file = os.path.join(cache_dir, f"{user_id}.json")
-        with open(cache_file, 'w') as f:
-            json.dump(listings, f, indent=2)
-        
+        GLOBAL_USER_LISTINGS[user_id] = listings.copy()
+        print(f"Saved {len(listings)} listings to memory cache for user {user_id}")
         return True
     except Exception as e:
         print(f"Failed to save user listings to cache: {e}")
         return False
 
 def load_user_listings_from_cache(user_id):
-    """Load user listings from file cache"""
+    """Load user listings from global memory cache"""
     try:
-        cache_file = os.path.join('cache', 'user_listings', f"{user_id}.json")
-        if os.path.exists(cache_file):
-            with open(cache_file, 'r') as f:
-                listings = json.load(f)
-            print(f"Loaded {len(listings)} listings from cache for user {user_id}")
-            return listings
-        return []
+        listings = GLOBAL_USER_LISTINGS.get(user_id, [])
+        if listings:
+            print(f"Loaded {len(listings)} listings from memory cache for user {user_id}")
+        return listings.copy() if listings else []
     except Exception as e:
         print(f"Failed to load user listings from cache: {e}")
         return []
@@ -364,6 +366,16 @@ def marketplace():
     else:
         print("No session marketplace listings found")
     
+    # Add all cached listings from global memory
+    cached_listings = get_all_cached_listings()
+    if cached_listings:
+        print(f"Adding {len(cached_listings)} cached listings to marketplace")
+        # Avoid duplicates
+        existing_ids = {l.get('id') for l in listings}
+        for cached_listing in cached_listings:
+            if cached_listing.get('id') not in existing_ids:
+                listings.append(cached_listing)
+    
     # If still no listings, show sample ones
     if not listings:
         print("No listings found, using samples")
@@ -530,13 +542,26 @@ def my_listings():
     """Show current user's listings"""
     user_id = get_current_user_id()
     
-    # Check session listings first
+    # Check cached listings first
+    cached_listings = load_user_listings_from_cache(user_id)
+    print(f"Cached listings found: {len(cached_listings)}")
+    
+    # Check session listings
     session_listings = session.get('user_listings', [])
     print(f"Session listings found: {len(session_listings)}")
     
+    # Merge cached and session listings
+    all_user_listings = []
+    seen_ids = set()
+    
+    for listing in cached_listings + session_listings:
+        if listing.get('id') not in seen_ids:
+            all_user_listings.append(listing)
+            seen_ids.add(listing.get('id'))
+    
     # Add placeholder images to existing listings that don't have them or have broken URLs
-    for listing in session_listings:
-        print(f"Session listing: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
+    for listing in all_user_listings:
+        print(f"User listing: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
         images = listing.get('images', [])
         print(f"  Current images: {images}")
         needs_fix = False
@@ -562,35 +587,43 @@ def my_listings():
         else:
             print(f"  Images OK, no fix needed")
     
-    # Update session with modified listings
-    if session_listings:
-        session['user_listings'] = session_listings
+    # Update both session and cache with modified listings
+    session['user_listings'] = all_user_listings
+    save_user_listings_to_cache(user_id, all_user_listings)
     
     # Try to get listings from database
-    listings = []
+    db_listings = []
     try:
         db_listings = supabase_logger.get_user_listings(user_id)
         print(f"Database returned {len(db_listings)} listings")
-        listings.extend(db_listings)
     except Exception as e:
         print(f"Failed to get database user listings: {e}")
     
-    # Add session listings
-    if session_listings:
-        print(f"Adding {len(session_listings)} session listings to user dashboard")
-        listings.extend(session_listings)
-    else:
-        print("No session listings found")
+    # Combine all listings (database + cached/session)
+    final_listings = []
+    seen_ids = set()
     
-    print(f"Total listings to show: {len(listings)}")
+    # Add cached/session listings first (these are most up-to-date)
+    for listing in all_user_listings:
+        if listing.get('id') not in seen_ids:
+            final_listings.append(listing)
+            seen_ids.add(listing.get('id'))
+    
+    # Add database listings if not already present
+    for listing in db_listings:
+        if listing.get('id') not in seen_ids:
+            final_listings.append(listing)
+            seen_ids.add(listing.get('id'))
+    
+    print(f"Total listings to show: {len(final_listings)}")
     
     # Debug: Print each listing's image data
-    for i, listing in enumerate(listings):
+    for i, listing in enumerate(final_listings):
         print(f"Listing {i+1}: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
         print(f"  Images: {listing.get('images', 'No images key')}")
         print(f"  Images length: {len(listing.get('images', []))}")
     
-    return render_template('my_listings.html', listings=listings)
+    return render_template('my_listings.html', listings=final_listings)
 
 @app.route('/toggle-listing/<listing_id>')
 @login_required

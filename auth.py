@@ -78,7 +78,10 @@ def login_user(email: str, supabase_client: SupabaseLogger):
 
 def logout_user():
     """Log out the current user"""
-    session.clear()
+    # Clear user-specific session data but preserve some application state
+    user_keys_to_clear = ['user_id', 'user_email', 'is_paid', 'user_listings']
+    for key in user_keys_to_clear:
+        session.pop(key, None)
 
 def get_current_user_id():
     """Get current user ID from session"""
