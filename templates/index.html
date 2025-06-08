@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turo Vehicle Eligibility Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">List your car</a>
+                <a href="#" class="nav-link">How it works</a>
+                <a href="#" class="nav-link">About</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="content-grid">
+            <div class="content-left">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Is your vehicle eligible for Turo?
+                    </h1>
+                    <p class="hero-subtitle">
+                        Check if your car meets Turo's requirements with our instant eligibility checker.
+                    </p>
+
+                    <form class="eligibility-form" method="POST" action="{{ url_for('check_eligibility') }}">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">🚗</span>
+                                <input 
+                                    type="text" 
+                                    name="vin" 
+                                    placeholder="Enter your 17-character VIN"
+                                    class="form-input"
+                                    maxlength="17"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-icon">📊</span>
+                                <input 
+                                    type="number" 
+                                    name="mileage" 
+                                    placeholder="Enter current mileage"
+                                    class="form-input"
+                                    min="0"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <button type="submit" class="check-btn">
+                            Check eligibility
+                        </button>
+                    </form>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div class="flash-messages">
+                                {% for category, message in messages %}
+                                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+
+            <div class="content-right">
+                <div class="illustration">
+                    <div class="car-illustration">
+                        <div class="car-body"></div>
+                        <div class="car-windows"></div>
+                        <div class="car-wheels">
+                            <div class="wheel wheel-front"></div>
+                            <div class="wheel wheel-rear"></div>
+                        </div>
+                    </div>
+                    <div class="background-elements">
+                        <div class="building building-1"></div>
+                        <div class="building building-2"></div>
+                        <div class="building building-3"></div>
+                        <div class="cloud cloud-1"></div>
+                        <div class="cloud cloud-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>

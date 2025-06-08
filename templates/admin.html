@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Turo Vehicle Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Turo</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">← Back to checker</a>
+                <button class="btn-secondary">Log in</button>
+                <button class="btn-primary">Sign up</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Recent Eligibility Checks</h1>
+                <p>Last 25 VIN checks performed</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if recent_checks %}
+                <div class="checks-table-container">
+                    <table class="checks-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>VIN</th>
+                                <th>Vehicle</th>
+                                <th>Mileage</th>
+                                <th>Status</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for check in recent_checks %}
+                                <tr class="{{ 'eligible-row' if check.eligible else 'ineligible-row' }}">
+                                    <td class="date-cell">
+                                        {{ check.checked_at[:19].replace('T', ' ') if check.checked_at else 'N/A' }}
+                                    </td>
+                                    <td class="vin-cell">
+                                        {{ check.vin[:8] }}...{{ check.vin[-4:] if check.vin else 'N/A' }}
+                                    </td>
+                                    <td class="vehicle-cell">
+                                        {{ check.year or 'N/A' }} {{ check.make or 'Unknown' }} {{ check.model or '' }}
+                                    </td>
+                                    <td class="mileage-cell">
+                                        {{ "{:,}".format(check.mileage) if check.mileage else 'N/A' }}
+                                    </td>
+                                    <td class="status-cell">
+                                        <span class="status-badge {{ 'eligible' if check.eligible else 'ineligible' }}">
+                                            {{ '✅ Eligible' if check.eligible else '❌ Ineligible' }}
+                                        </span>
+                                    </td>
+                                    <td class="reason-cell">
+                                        {{ check.reason[:100] + '...' if check.reason and check.reason|length > 100 else check.reason or 'N/A' }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="no-data">
+                    <div class="no-data-icon">📊</div>
+                    <h2>No checks yet</h2>
+                    <p>No eligibility checks have been performed yet.</p>
+                    <a href="{{ url_for('index') }}" class="btn-primary">Perform a check</a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Turo Vehicle Eligibility Checker. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>
