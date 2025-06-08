@@ -62,8 +62,8 @@ def login_user(email: str, supabase_client: SupabaseLogger):
         import uuid
         session['user_id'] = str(uuid.uuid4())
         session['user_email'] = email
-        session['is_paid'] = False  # Default to free user for testing
-        print(f"Created temporary session for {email}")
+        session['is_paid'] = True  # Default to paid user for demo when DB unavailable
+        print(f"Created temporary paid session for {email}")
         return True
     
     return False
