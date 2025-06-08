@@ -10,17 +10,23 @@ class SupabaseLogger:
         self.supabase_url = os.getenv('SUPABASE_URL')
         self.supabase_key = os.getenv('SUPABASE_ANON_KEY')
         
+        print(f"Supabase URL configured: {bool(self.supabase_url)}")
+        print(f"Supabase Key configured: {bool(self.supabase_key)}")
+        
         self.client: Optional[Client] = None
         
         if self.supabase_url and self.supabase_key:
             try:
                 # Try basic client initialization first
                 self.client = create_client(self.supabase_url, self.supabase_key)
-                print("Supabase client initialized successfully")
+                print("✅ Supabase client initialized successfully")
             except Exception as e:
-                print(f"Failed to initialize Supabase client: {e}")
-                print("Running in fallback mode without database")
+                print(f"❌ Failed to initialize Supabase client: {e}")
+                print("📱 Running in fallback mode without database")
                 self.client = None
+        else:
+            print("⚠️ Supabase credentials not found in environment variables")
+            print("📱 Running in fallback mode without database")
     
     def is_connected(self) -> bool:
         """Check if Supabase client is properly initialized"""
