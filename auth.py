@@ -47,13 +47,23 @@ def paid_user_required(f):
 def login_user(email: str, supabase_client: SupabaseLogger):
     """Log in a user and set session variables"""
     try:
+        # Check if Supabase is connected
+        if not supabase_client.is_connected():
+            print("Supabase not connected, using fallback authentication")
+            raise Exception("Supabase client not available")
+        
         user = supabase_client.create_or_get_user(email)
         
         if user:
             session['user_id'] = user['id']
             session['user_email'] = user['email']
             session['is_paid'] = user.get('is_paid', False)
+            print(f"Supabase login successful for {email}")
             return True
+        else:
+            print("Supabase returned None user, using fallback")
+            raise Exception("Failed to create/get user from Supabase")
+            
     except Exception as e:
         print(f"Supabase error: {e}")
         print("Using fallback authentication...")
@@ -65,8 +75,6 @@ def login_user(email: str, supabase_client: SupabaseLogger):
         session['is_paid'] = True  # Default to paid user for demo when DB unavailable
         print(f"Created temporary paid session for {email}")
         return True
-    
-    return False
 
 def logout_user():
     """Log out the current user"""
