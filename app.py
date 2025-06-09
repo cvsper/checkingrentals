@@ -722,23 +722,37 @@ def contact_seller():
     
     # Get listing to find seller_id
     try:
-        # First check session listings
-        all_listings = session.get('all_listings', []) + session.get('user_listings', [])
+        # Check all possible sources for the listing
         listing = None
-        for l in all_listings:
+        
+        # 1. Check session listings
+        session_listings = session.get('all_listings', []) + session.get('user_listings', [])
+        for l in session_listings:
             if l.get('id') == listing_id:
                 listing = l
+                print(f"Found listing in session: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
                 break
         
+        # 2. Check cached listings (global memory)
         if not listing:
-            # Try database
+            cached_listings = get_all_cached_listings()
+            for l in cached_listings:
+                if l.get('id') == listing_id:
+                    listing = l
+                    print(f"Found listing in cache: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
+                    break
+        
+        # 3. Check database
+        if not listing:
             db_listings = supabase_logger.get_active_listings()
             for l in db_listings:
                 if l.get('id') == listing_id:
                     listing = l
+                    print(f"Found listing in database: {listing.get('year')} {listing.get('make')} {listing.get('model')}")
                     break
         
         if not listing:
+            print(f"Listing {listing_id} not found in any source")
             flash('Listing not found', 'error')
             return redirect(url_for('marketplace'))
         
