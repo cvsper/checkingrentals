@@ -75,6 +75,9 @@ def save_uploaded_image(listing_id, image_file, filename):
 # Global in-memory storage for listings (survives across requests)
 GLOBAL_USER_LISTINGS = {}
 
+# Global in-memory storage for contact requests (survives across sessions)
+GLOBAL_CONTACT_REQUESTS = []
+
 def get_all_cached_listings():
     """Get all listings from all users in the global cache"""
     all_listings = []
@@ -823,13 +826,17 @@ def contact_seller():
             'listing_info': listing  # Store listing details for display
         }
         
-        # Store in session
+        # Store in session AND global storage
         if 'contact_requests' not in session:
             session['contact_requests'] = []
         session['contact_requests'].append(contact_request)
         
+        # Also store globally (survives across different user sessions)
+        GLOBAL_CONTACT_REQUESTS.append(contact_request)
+        
         print(f"Stored contact request in session: {contact_request['id']}")
         print(f"Total contact requests in session: {len(session['contact_requests'])}")
+        print(f"Total contact requests globally: {len(GLOBAL_CONTACT_REQUESTS)}")
         print(f"Contact request details: buyer={contact_request['buyer_id']}, seller={contact_request['seller_id']}")
         
         flash('Contact request sent successfully! The seller will be notified.', 'success')
@@ -853,15 +860,24 @@ def seller_requests():
     # Get requests from session storage
     session_requests = session.get('contact_requests', [])
     print(f"Total contact requests in session: {len(session_requests)}")
-    seller_session_requests = [req for req in session_requests if req.get('seller_id') == user_id]
-    print(f"Found {len(seller_session_requests)} session seller requests for user {user_id}")
+    
+    # Get requests from global storage
+    global_requests = GLOBAL_CONTACT_REQUESTS
+    print(f"Total contact requests globally: {len(global_requests)}")
+    
+    # Filter for seller requests from both sources
+    session_seller_requests = [req for req in session_requests if req.get('seller_id') == user_id]
+    global_seller_requests = [req for req in global_requests if req.get('seller_id') == user_id]
+    
+    print(f"Found {len(session_seller_requests)} session seller requests for user {user_id}")
+    print(f"Found {len(global_seller_requests)} global seller requests for user {user_id}")
     
     # Debug: print all requests for this seller
-    for req in seller_session_requests:
-        print(f"  Seller request: {req.get('id')} from {req.get('buyer_email')} - status: {req.get('status')}")
+    for req in global_seller_requests:
+        print(f"  Global seller request: {req.get('id')} from {req.get('buyer_email')} - status: {req.get('status')}")
     
-    # Combine requests (session first since they're most recent)
-    all_requests = seller_session_requests + db_requests
+    # Combine all requests (global + session + database)
+    all_requests = global_seller_requests + session_seller_requests + db_requests
     
     # Remove duplicates by ID
     seen_ids = set()
@@ -888,15 +904,24 @@ def buyer_requests():
     # Get requests from session storage
     session_requests = session.get('contact_requests', [])
     print(f"Total contact requests in session: {len(session_requests)}")
-    buyer_session_requests = [req for req in session_requests if req.get('buyer_id') == user_id]
-    print(f"Found {len(buyer_session_requests)} session buyer requests for user {user_id}")
+    
+    # Get requests from global storage
+    global_requests = GLOBAL_CONTACT_REQUESTS
+    print(f"Total contact requests globally: {len(global_requests)}")
+    
+    # Filter for buyer requests from both sources
+    session_buyer_requests = [req for req in session_requests if req.get('buyer_id') == user_id]
+    global_buyer_requests = [req for req in global_requests if req.get('buyer_id') == user_id]
+    
+    print(f"Found {len(session_buyer_requests)} session buyer requests for user {user_id}")
+    print(f"Found {len(global_buyer_requests)} global buyer requests for user {user_id}")
     
     # Debug: print all requests for this buyer
-    for req in buyer_session_requests:
-        print(f"  Buyer request: {req.get('id')} to seller {req.get('seller_id')} - status: {req.get('status')}")
+    for req in global_buyer_requests:
+        print(f"  Global buyer request: {req.get('id')} to seller {req.get('seller_id')} - status: {req.get('status')}")
     
-    # Combine requests (session first since they're most recent)
-    all_requests = buyer_session_requests + db_requests
+    # Combine all requests (global + session + database)
+    all_requests = global_buyer_requests + session_buyer_requests + db_requests
     
     # Remove duplicates by ID
     seen_ids = set()
@@ -938,7 +963,16 @@ def respond_to_request(request_id, action):
         session['contact_requests'] = session_requests
         print(f"Updated contact request {request_id} status to {new_status} in session")
     
-    success = db_success or session_updated
+    # Update in global storage
+    global_updated = False
+    for req in GLOBAL_CONTACT_REQUESTS:
+        if req.get('id') == request_id and req.get('seller_id') == user_id:
+            req['status'] = new_status
+            global_updated = True
+            print(f"Updated contact request {request_id} status to {new_status} in global storage")
+            break
+    
+    success = db_success or session_updated or global_updated
     
     if success:
         if action == 'accept':
