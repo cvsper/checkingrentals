@@ -13,15 +13,8 @@
                 <h1>Turo</h1>
             </div>
             <div class="nav-links">
-                <a href="{{ url_for('marketplace') }}" class="nav-link">Marketplace</a>
                 <a href="#" class="nav-link">How it works</a>
                 <a href="#" class="nav-link">About</a>
-                {% if session.user_id %}
-                    <a href="{{ url_for('my_listings') }}" class="nav-link">My Listings</a>
-                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
-                {% else %}
-                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
-                {% endif %}
             </div>
         </nav>
     </header>
