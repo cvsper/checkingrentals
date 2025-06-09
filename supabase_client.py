@@ -17,11 +17,27 @@ class SupabaseLogger:
         
         if self.supabase_url and self.supabase_key:
             try:
-                # Try basic client initialization first
+                # Ensure URL is in correct format
+                if not self.supabase_url.startswith('https://'):
+                    # Fix common URL format issues
+                    if self.supabase_url.startswith('postgresql://'):
+                        # Extract project ref from PostgreSQL URL
+                        import re
+                        match = re.search(r'postgres\.([^:]+)', self.supabase_url)
+                        if match:
+                            project_ref = match.group(1)
+                            self.supabase_url = f"https://{project_ref}.supabase.co"
+                            print(f"🔧 Converted PostgreSQL URL to Supabase format: {self.supabase_url}")
+                    elif '.' in self.supabase_url and 'supabase' in self.supabase_url:
+                        self.supabase_url = f"https://{self.supabase_url}"
+                        print(f"🔧 Added https:// to URL: {self.supabase_url}")
+                
+                print(f"🔗 Connecting to: {self.supabase_url}")
                 self.client = create_client(self.supabase_url, self.supabase_key)
                 print("✅ Supabase client initialized successfully")
             except Exception as e:
                 print(f"❌ Failed to initialize Supabase client: {e}")
+                print(f"🔍 URL used: {self.supabase_url}")
                 print("📱 Running in fallback mode without database")
                 self.client = None
         else:

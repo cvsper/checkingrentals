@@ -327,20 +327,35 @@ def debug_session():
 @app.route('/migrate-database')
 def migrate_database():
     """Migrate cached listings to database (admin only)"""
+    cached_count = len(get_all_cached_listings())
+    
     if not supabase_logger.is_connected():
         return jsonify({
             'success': False,
-            'message': 'Supabase not connected. Please configure environment variables first.',
-            'cached_listings': len(get_all_cached_listings())
+            'message': 'Supabase not connected. Please check environment variables and restart.',
+            'cached_listings': cached_count,
+            'global_cache_users': list(GLOBAL_USER_LISTINGS.keys()),
+            'supabase_connected': False
         })
     
     success = migrate_cached_listings_to_database()
-    cached_count = len(get_all_cached_listings())
     
     return jsonify({
         'success': success,
         'message': f'Migration {"completed" if success else "failed"}',
         'cached_listings_found': cached_count,
+        'global_cache_users': list(GLOBAL_USER_LISTINGS.keys()),
+        'supabase_connected': supabase_logger.is_connected()
+    })
+
+@app.route('/debug-cache')
+def debug_cache():
+    """Debug the global cache state"""
+    return jsonify({
+        'global_cache_size': len(GLOBAL_USER_LISTINGS),
+        'users_in_cache': list(GLOBAL_USER_LISTINGS.keys()),
+        'total_listings': len(get_all_cached_listings()),
+        'cache_details': {user_id: len(listings) for user_id, listings in GLOBAL_USER_LISTINGS.items()},
         'supabase_connected': supabase_logger.is_connected()
     })
 
