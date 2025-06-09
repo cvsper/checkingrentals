@@ -35,7 +35,8 @@ class VINDecoder:
                 'make': None,
                 'model': None,
                 'year': None,
-                'body_class': None
+                'body_class': None,
+                'title_status': 'Clean'  # Default to clean title
             }
             
             for result in data['Results']:
@@ -54,6 +55,13 @@ class VINDecoder:
                             pass
                     elif 'body class' in variable:
                         vehicle_info['body_class'] = value
+                    elif 'title' in variable or 'brand' in variable:
+                        # Check for title status indicators
+                        value_lower = value.lower()
+                        if any(keyword in value_lower for keyword in ['salvage', 'flood', 'lemon', 'rebuilt', 'junk']):
+                            vehicle_info['title_status'] = value
+                        elif 'clean' in value_lower:
+                            vehicle_info['title_status'] = 'Clean'
             
             return vehicle_info if vehicle_info['make'] and vehicle_info['year'] else None
             

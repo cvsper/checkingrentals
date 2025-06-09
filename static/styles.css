@@ -1830,3 +1830,23 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Title Status Styling */
+.title-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.title-status.clean {
+    color: #166534;
+}
+
+.title-status.branded {
+    color: #dc2626;
+}
+
+.title-icon {
+    font-size: 1.1rem;
+}
