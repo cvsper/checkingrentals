@@ -372,6 +372,29 @@ def debug_session_state():
         'all_listings_count': len(session.get('all_listings', []))
     })
 
+@app.route('/debug-contact-requests')
+@login_required
+def debug_contact_requests():
+    """Debug contact request filtering"""
+    user_id = get_current_user_id()
+    session_requests = session.get('contact_requests', [])
+    
+    # Debug buyer requests
+    buyer_requests = [req for req in session_requests if req.get('buyer_id') == user_id]
+    
+    # Debug seller requests  
+    seller_requests = [req for req in session_requests if req.get('seller_id') == user_id]
+    
+    return jsonify({
+        'current_user_id': user_id,
+        'total_session_requests': len(session_requests),
+        'buyer_requests_count': len(buyer_requests),
+        'seller_requests_count': len(seller_requests),
+        'buyer_requests': buyer_requests,
+        'seller_requests': seller_requests,
+        'all_session_requests': session_requests
+    })
+
 @app.route('/stripe-webhook', methods=['POST'])
 def stripe_webhook():
     """Handle Stripe webhook events"""

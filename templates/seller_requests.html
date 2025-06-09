@@ -39,6 +39,8 @@
                 {% endif %}
             {% endwith %}
 
+            <p>Debug: Found {{ requests|length }} total requests for this seller</p>
+            
             {% if requests %}
                 <div class="requests-grid">
                     {% for request in requests %}
