@@ -33,6 +33,7 @@ class SupabaseLogger:
                         print(f"🔧 Added https:// to URL: {self.supabase_url}")
                 
                 print(f"🔗 Connecting to: {self.supabase_url}")
+                # Use the most compatible client initialization method
                 self.client = create_client(self.supabase_url, self.supabase_key)
                 print("✅ Supabase client initialized successfully")
             except Exception as e:
