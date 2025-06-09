@@ -359,6 +359,19 @@ def debug_cache():
         'supabase_connected': supabase_logger.is_connected()
     })
 
+@app.route('/debug-session')
+def debug_session_state():
+    """Debug current session state"""
+    return jsonify({
+        'user_id': session.get('user_id'),
+        'user_email': session.get('user_email'),
+        'is_paid': session.get('is_paid'),
+        'contact_requests_count': len(session.get('contact_requests', [])),
+        'contact_requests': session.get('contact_requests', []),
+        'user_listings_count': len(session.get('user_listings', [])),
+        'all_listings_count': len(session.get('all_listings', []))
+    })
+
 @app.route('/stripe-webhook', methods=['POST'])
 def stripe_webhook():
     """Handle Stripe webhook events"""
@@ -793,6 +806,9 @@ def contact_seller():
         session['contact_requests'].append(contact_request)
         
         print(f"Stored contact request in session: {contact_request['id']}")
+        print(f"Total contact requests in session: {len(session['contact_requests'])}")
+        print(f"Contact request details: buyer={contact_request['buyer_id']}, seller={contact_request['seller_id']}")
+        
         flash('Contact request sent successfully! The seller will be notified.', 'success')
         
     except Exception as e:
@@ -813,8 +829,13 @@ def seller_requests():
     
     # Get requests from session storage
     session_requests = session.get('contact_requests', [])
+    print(f"Total contact requests in session: {len(session_requests)}")
     seller_session_requests = [req for req in session_requests if req.get('seller_id') == user_id]
     print(f"Found {len(seller_session_requests)} session seller requests for user {user_id}")
+    
+    # Debug: print all requests for this seller
+    for req in seller_session_requests:
+        print(f"  Seller request: {req.get('id')} from {req.get('buyer_email')} - status: {req.get('status')}")
     
     # Combine requests (session first since they're most recent)
     all_requests = seller_session_requests + db_requests
@@ -843,8 +864,13 @@ def buyer_requests():
     
     # Get requests from session storage
     session_requests = session.get('contact_requests', [])
+    print(f"Total contact requests in session: {len(session_requests)}")
     buyer_session_requests = [req for req in session_requests if req.get('buyer_id') == user_id]
     print(f"Found {len(buyer_session_requests)} session buyer requests for user {user_id}")
+    
+    # Debug: print all requests for this buyer
+    for req in buyer_session_requests:
+        print(f"  Buyer request: {req.get('id')} to seller {req.get('seller_id')} - status: {req.get('status')}")
     
     # Combine requests (session first since they're most recent)
     all_requests = buyer_session_requests + db_requests
