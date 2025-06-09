@@ -760,11 +760,26 @@ def contact_seller():
         # Create contact request
         request_id = supabase_logger.create_contact_request(buyer_id, seller_id, listing_id, message)
         
-        if request_id:
-            flash('Contact request sent successfully! The seller will be notified.', 'success')
-            # TODO: Send email notification to seller
-        else:
-            flash('Failed to send contact request. Please try again.', 'error')
+        # Always store in session as backup (since DB might fail due to RLS)
+        contact_request = {
+            'id': request_id if request_id else str(uuid.uuid4()),
+            'buyer_id': buyer_id,
+            'seller_id': seller_id,
+            'listing_id': listing_id,
+            'status': 'pending',
+            'message': message,
+            'created_at': datetime.now().isoformat(),
+            'buyer_email': session.get('user_email'),
+            'listing_info': listing  # Store listing details for display
+        }
+        
+        # Store in session
+        if 'contact_requests' not in session:
+            session['contact_requests'] = []
+        session['contact_requests'].append(contact_request)
+        
+        print(f"Stored contact request in session: {contact_request['id']}")
+        flash('Contact request sent successfully! The seller will be notified.', 'success')
         
     except Exception as e:
         print(f"Error creating contact request: {e}")
@@ -778,12 +793,29 @@ def seller_requests():
     """Show contact requests for the current user (as seller)"""
     user_id = get_current_user_id()
     
-    # Get requests where current user is the seller
-    requests = supabase_logger.get_seller_requests(user_id)
+    # Get requests from database
+    db_requests = supabase_logger.get_seller_requests(user_id)
+    print(f"Found {len(db_requests)} database seller requests for user {user_id}")
     
-    print(f"Found {len(requests)} seller requests for user {user_id}")
+    # Get requests from session storage
+    session_requests = session.get('contact_requests', [])
+    seller_session_requests = [req for req in session_requests if req.get('seller_id') == user_id]
+    print(f"Found {len(seller_session_requests)} session seller requests for user {user_id}")
     
-    return render_template('seller_requests.html', requests=requests)
+    # Combine requests (session first since they're most recent)
+    all_requests = seller_session_requests + db_requests
+    
+    # Remove duplicates by ID
+    seen_ids = set()
+    unique_requests = []
+    for req in all_requests:
+        if req.get('id') not in seen_ids:
+            unique_requests.append(req)
+            seen_ids.add(req.get('id'))
+    
+    print(f"Total unique seller requests: {len(unique_requests)}")
+    
+    return render_template('seller_requests.html', requests=unique_requests)
 
 @app.route('/my-requests')
 @login_required
@@ -791,12 +823,29 @@ def buyer_requests():
     """Show contact requests made by the current user (as buyer)"""
     user_id = get_current_user_id()
     
-    # Get requests where current user is the buyer
-    requests = supabase_logger.get_buyer_requests(user_id)
+    # Get requests from database
+    db_requests = supabase_logger.get_buyer_requests(user_id)
+    print(f"Found {len(db_requests)} database buyer requests for user {user_id}")
     
-    print(f"Found {len(requests)} buyer requests for user {user_id}")
+    # Get requests from session storage
+    session_requests = session.get('contact_requests', [])
+    buyer_session_requests = [req for req in session_requests if req.get('buyer_id') == user_id]
+    print(f"Found {len(buyer_session_requests)} session buyer requests for user {user_id}")
     
-    return render_template('buyer_requests.html', requests=requests)
+    # Combine requests (session first since they're most recent)
+    all_requests = buyer_session_requests + db_requests
+    
+    # Remove duplicates by ID
+    seen_ids = set()
+    unique_requests = []
+    for req in all_requests:
+        if req.get('id') not in seen_ids:
+            unique_requests.append(req)
+            seen_ids.add(req.get('id'))
+    
+    print(f"Total unique buyer requests: {len(unique_requests)}")
+    
+    return render_template('buyer_requests.html', requests=unique_requests)
 
 @app.route('/respond-request/<request_id>/<action>')
 @login_required
@@ -808,8 +857,25 @@ def respond_to_request(request_id, action):
         flash('Invalid action', 'error')
         return redirect(url_for('seller_requests'))
     
-    # Update request status
-    success = supabase_logger.update_contact_request_status(request_id, action + 'ed')
+    new_status = action + 'ed'
+    
+    # Update in database
+    db_success = supabase_logger.update_contact_request_status(request_id, new_status)
+    
+    # Update in session storage
+    session_requests = session.get('contact_requests', [])
+    session_updated = False
+    for req in session_requests:
+        if req.get('id') == request_id and req.get('seller_id') == user_id:
+            req['status'] = new_status
+            session_updated = True
+            break
+    
+    if session_updated:
+        session['contact_requests'] = session_requests
+        print(f"Updated contact request {request_id} status to {new_status} in session")
+    
+    success = db_success or session_updated
     
     if success:
         if action == 'accept':

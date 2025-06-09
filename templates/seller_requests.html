@@ -60,12 +60,26 @@
 
                             <div class="request-content">
                                 <div class="vehicle-info">
-                                    <h3>{{ request.listings.year if request.listings else 'Unknown' }} {{ request.listings.make if request.listings else '' }} {{ request.listings.model if request.listings else '' }}</h3>
-                                    <p class="location">📍 {{ request.listings.location if request.listings else 'Location not specified' }}</p>
+                                    {% if request.listings %}
+                                        <h3>{{ request.listings.year }} {{ request.listings.make }} {{ request.listings.model }}</h3>
+                                        <p class="location">📍 {{ request.listings.location }}</p>
+                                    {% elif request.listing_info %}
+                                        <h3>{{ request.listing_info.year }} {{ request.listing_info.make }} {{ request.listing_info.model }}</h3>
+                                        <p class="location">📍 {{ request.listing_info.location }}</p>
+                                    {% else %}
+                                        <h3>Vehicle Information</h3>
+                                        <p class="location">📍 Location not specified</p>
+                                    {% endif %}
                                 </div>
 
                                 <div class="buyer-info">
-                                    <p><strong>From:</strong> {{ request.buyers.email if request.buyers else 'Unknown buyer' }}</p>
+                                    {% if request.buyers %}
+                                        <p><strong>From:</strong> {{ request.buyers.email }}</p>
+                                    {% elif request.buyer_email %}
+                                        <p><strong>From:</strong> {{ request.buyer_email }}</p>
+                                    {% else %}
+                                        <p><strong>From:</strong> Unknown buyer</p>
+                                    {% endif %}
                                     {% if request.message %}
                                         <div class="request-message">
                                             <strong>Message:</strong>
@@ -90,7 +104,13 @@
                                 {% elif request.status == 'accepted' %}
                                     <div class="contact-info">
                                         <p><strong>✅ Request Accepted</strong></p>
-                                        <p>You can now communicate with the buyer at: <a href="mailto:{{ request.buyers.email if request.buyers else '' }}">{{ request.buyers.email if request.buyers else 'Email not available' }}</a></p>
+                                        {% if request.buyers %}
+                                            <p>You can now communicate with the buyer at: <a href="mailto:{{ request.buyers.email }}">{{ request.buyers.email }}</a></p>
+                                        {% elif request.buyer_email %}
+                                            <p>You can now communicate with the buyer at: <a href="mailto:{{ request.buyer_email }}">{{ request.buyer_email }}</a></p>
+                                        {% else %}
+                                            <p>Buyer contact information not available</p>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             </div>

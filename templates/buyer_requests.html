@@ -60,8 +60,16 @@
 
                             <div class="request-content">
                                 <div class="vehicle-info">
-                                    <h3>{{ request.listings.year if request.listings else 'Unknown' }} {{ request.listings.make if request.listings else '' }} {{ request.listings.model if request.listings else '' }}</h3>
-                                    <p class="location">📍 {{ request.listings.location if request.listings else 'Location not specified' }}</p>
+                                    {% if request.listings %}
+                                        <h3>{{ request.listings.year }} {{ request.listings.make }} {{ request.listings.model }}</h3>
+                                        <p class="location">📍 {{ request.listings.location }}</p>
+                                    {% elif request.listing_info %}
+                                        <h3>{{ request.listing_info.year }} {{ request.listing_info.make }} {{ request.listing_info.model }}</h3>
+                                        <p class="location">📍 {{ request.listing_info.location }}</p>
+                                    {% else %}
+                                        <h3>Vehicle Information</h3>
+                                        <p class="location">📍 Location not specified</p>
+                                    {% endif %}
                                 </div>
 
                                 {% if request.message %}
