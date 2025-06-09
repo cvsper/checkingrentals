@@ -46,17 +46,6 @@
                                 <span class="info-label">Mileage:</span>
                                 <span class="info-value">{{ "{:,}".format(mileage) }} miles</span>
                             </div>
-                            <div class="info-row">
-                                <span class="info-label">Title Status:</span>
-                                <span class="info-value title-status {{ 'clean' if vehicle_info.title_status == 'Clean' else 'branded' }}">
-                                    {% if vehicle_info.title_status == 'Clean' %}
-                                        <span class="title-icon">✅</span>
-                                    {% else %}
-                                        <span class="title-icon">⚠️</span>
-                                    {% endif %}
-                                    {{ vehicle_info.title_status or 'Clean' }}
-                                </span>
-                            </div>
                         </div>
                     </div>
 
