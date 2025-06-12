@@ -46,15 +46,19 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Title Status:</span>
-                                <span class="info-value title-status {{ 'clean' if vehicle_info.title_status == 'Clean' else 'branded' }}">
-                                    {% if vehicle_info.title_status == 'Clean' %}
+                                <span class="info-value title-status {{ 'clean' if 'Clean' in (vehicle_info.title_status or '') else 'branded' }}">
+                                    {% if 'Clean' in (vehicle_info.title_status or '') %}
                                         <span class="title-icon">✅</span>
                                     {% else %}
                                         <span class="title-icon">⚠️</span>
                                     {% endif %}
-                                    {{ vehicle_info.title_status or 'Clean' }}
+                                    {{ vehicle_info.title_status or 'Unknown' }}
                                 </span>
                             </div>
+                        </div>
+                        
+                        <div class="title-disclaimer">
+                            <p><strong>⚠️ Important:</strong> VIN lookup cannot determine title status. You must verify your vehicle has a <strong>clean title</strong> by checking your physical title document. Vehicles with salvage, flood, lemon, or any other branded titles are <strong>not eligible</strong> for Turo.</p>
                         </div>
                     </div>
 

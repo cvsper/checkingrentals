@@ -70,16 +70,20 @@ class TuroEligibilityChecker:
     def check_title_status_eligibility(self, title_status: str) -> Tuple[bool, str]:
         """Check if vehicle title status is eligible for Turo"""
         if not title_status:
-            # Default to clean if no title status provided
-            return True, "Title status: Clean (assumed)"
+            return False, "Title status verification required - cannot determine eligibility without valid title information"
         
         title_status_upper = title_status.upper()
+        
+        # Check for unknown/unverified status
+        if 'UNKNOWN' in title_status_upper or 'VERIFICATION REQUIRED' in title_status_upper:
+            return False, "Title status must be verified before determining Turo eligibility. Please check your vehicle title document."
         
         # List of problematic title statuses that make vehicles ineligible
         problematic_statuses = [
             'SALVAGE', 'FLOOD', 'LEMON', 'REBUILT', 'JUNK', 'TOTAL LOSS',
             'FIRE', 'HAIL', 'WATER', 'DAMAGED', 'RECONSTRUCTED', 'DISMANTLED',
-            'PARTS ONLY', 'NON-REPAIRABLE', 'CERTIFICATE OF DESTRUCTION'
+            'PARTS ONLY', 'NON-REPAIRABLE', 'CERTIFICATE OF DESTRUCTION',
+            'BRANDED', 'PRIOR SALVAGE', 'PRIOR FLOOD', 'MANUFACTURER BUYBACK'
         ]
         
         # Check if title contains any problematic keywords
@@ -87,8 +91,12 @@ class TuroEligibilityChecker:
             if status in title_status_upper:
                 return False, f"Vehicles with {title_status} titles are not eligible for Turo"
         
-        # If title status is explicitly "Clean" or doesn't contain problematic keywords
-        return True, f"Title status: {title_status} (eligible)"
+        # Only accept explicitly clean titles
+        if 'CLEAN' in title_status_upper or 'CLEAR' in title_status_upper:
+            return True, f"Title status: {title_status} (eligible)"
+        
+        # If title status is not explicitly clean or contains unknown terms
+        return False, f"Title status '{title_status}' requires manual verification. Only vehicles with verified clean titles are eligible for Turo."
     
     def check_full_eligibility(self, vehicle_info: Dict, mileage: int) -> Dict:
         """Perform complete eligibility check"""

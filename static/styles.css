@@ -1880,6 +1880,22 @@ body {
     font-size: 1.1rem;
 }
 
+/* Title Disclaimer */
+.title-disclaimer {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.title-disclaimer p {
+    margin: 0;
+    color: #856404;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
 /* Centered Result Layout */
 .result-container {
     max-width: 800px;
