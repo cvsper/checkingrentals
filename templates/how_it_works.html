@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - Checking Rentals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1>Checking Rentals</h1>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link">← Back to checker</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="how-it-works-container">
+            <div class="how-it-works-content">
+                <div class="hero-section-how">
+                    <h1>How It Works</h1>
+                    <p class="subtitle">Understand your vehicle's Turo eligibility in 3 simple steps</p>
+                </div>
+
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Enter Your VIN</h3>
+                            <p>Provide your 17-character Vehicle Identification Number (VIN) found on your dashboard, door frame, or registration documents.</p>
+                            <div class="step-detail">
+                                <strong>What we check:</strong>
+                                <ul>
+                                    <li>Vehicle make and model</li>
+                                    <li>Model year</li>
+                                    <li>Body class and specifications</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Add Mileage</h3>
+                            <p>Enter your vehicle's current odometer reading to verify it meets Turo's mileage requirements.</p>
+                            <div class="step-detail">
+                                <strong>Mileage limit:</strong>
+                                <ul>
+                                    <li>Maximum 130,000 miles</li>
+                                    <li>Must be accurate odometer reading</li>
+                                    <li>Higher mileage may affect earnings</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Get Instant Results</h3>
+                            <p>Receive immediate eligibility results with detailed breakdown and potential earnings estimate.</p>
+                            <div class="step-detail">
+                                <strong>You'll see:</strong>
+                                <ul>
+                                    <li>Eligibility status (✅ or ❌)</li>
+                                    <li>Detailed requirement breakdown</li>
+                                    <li>Monthly earnings estimate</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="requirements-section">
+                    <h2>Turo Eligibility Requirements</h2>
+                    <div class="requirements-grid">
+                        <div class="requirement-card">
+                            <div class="req-icon">📅</div>
+                            <h4>Vehicle Age</h4>
+                            <p>Must be 12 years old or newer from current model year</p>
+                        </div>
+                        <div class="requirement-card">
+                            <div class="req-icon">🛣️</div>
+                            <h4>Mileage</h4>
+                            <p>Maximum 130,000 miles on odometer</p>
+                        </div>
+                        <div class="requirement-card">
+                            <div class="req-icon">🚗</div>
+                            <h4>Make & Model</h4>
+                            <p>Must be approved brand and model (excludes exotic supercars)</p>
+                        </div>
+                        <div class="requirement-card">
+                            <div class="req-icon">📋</div>
+                            <h4>Clean Title</h4>
+                            <p>Must have clean title (no salvage, flood, lemon, or branded titles)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="title-warning">
+                    <h2>⚠️ Important: Title Verification</h2>
+                    <div class="warning-content">
+                        <p><strong>VIN lookup cannot determine your vehicle's title status.</strong> Our system can only verify manufacturing details like make, model, and year.</p>
+                        
+                        <div class="title-steps">
+                            <h4>To verify your title status:</h4>
+                            <ol>
+                                <li>Check your physical vehicle title document</li>
+                                <li>Look for any brands or stamps indicating damage history</li>
+                                <li>Verify it says "Clean" or "Clear" title</li>
+                                <li>Contact your DMV if you're unsure</li>
+                            </ol>
+                        </div>
+
+                        <div class="ineligible-titles">
+                            <h4>❌ Ineligible title types:</h4>
+                            <div class="title-types">
+                                <span class="title-type">Salvage</span>
+                                <span class="title-type">Flood</span>
+                                <span class="title-type">Lemon</span>
+                                <span class="title-type">Rebuilt</span>
+                                <span class="title-type">Junk</span>
+                                <span class="title-type">Total Loss</span>
+                                <span class="title-type">Fire Damage</span>
+                                <span class="title-type">Hail Damage</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="earnings-section">
+                    <h2>Earnings Estimates</h2>
+                    <p>Our system provides accurate monthly earnings estimates based on:</p>
+                    <div class="earnings-factors">
+                        <div class="factor">
+                            <strong>Vehicle Type:</strong> Luxury and electric vehicles typically earn more
+                        </div>
+                        <div class="factor">
+                            <strong>Age & Condition:</strong> Newer vehicles with lower mileage command higher rates
+                        </div>
+                        <div class="factor">
+                            <strong>Market Demand:</strong> Popular models in good condition are most profitable
+                        </div>
+                        <div class="factor">
+                            <strong>Brand Premium:</strong> Tesla, BMW, Mercedes typically earn $1,500-$2,500/month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-sources">
+                    <h2>Data Sources & Accuracy</h2>
+                    <div class="source-grid">
+                        <div class="source-card">
+                            <h4>🏛️ NHTSA Database</h4>
+                            <p>Official federal database for vehicle specifications, safety ratings, and recall information</p>
+                        </div>
+                        <div class="source-card">
+                            <h4>📊 Market Analysis</h4>
+                            <p>Real Turo earnings data from thousands of active hosts across different vehicle categories</p>
+                        </div>
+                        <div class="source-card">
+                            <h4>🔄 Regular Updates</h4>
+                            <p>Eligibility rules and earnings estimates updated to match current Turo policies</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cta-section">
+                    <h2>Ready to Check Your Vehicle?</h2>
+                    <p>Get instant results and see if your vehicle is eligible for Turo</p>
+                    <a href="{{ url_for('index') }}" class="cta-button">
+                        <span>🔍</span>
+                        <span>Check My Vehicle</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Checking Rentals. Unofficial tool for reference only.</p>
+        </div>
+    </footer>
+</body>
+</html>
