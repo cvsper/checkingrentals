@@ -67,19 +67,44 @@ class TuroEligibilityChecker:
         
         return True, f"{make} {model or ''} is eligible by make/model"
     
+    def check_title_status_eligibility(self, title_status: str) -> Tuple[bool, str]:
+        """Check if vehicle title status is eligible for Turo"""
+        if not title_status:
+            # Default to clean if no title status provided
+            return True, "Title status: Clean (assumed)"
+        
+        title_status_upper = title_status.upper()
+        
+        # List of problematic title statuses that make vehicles ineligible
+        problematic_statuses = [
+            'SALVAGE', 'FLOOD', 'LEMON', 'REBUILT', 'JUNK', 'TOTAL LOSS',
+            'FIRE', 'HAIL', 'WATER', 'DAMAGED', 'RECONSTRUCTED', 'DISMANTLED',
+            'PARTS ONLY', 'NON-REPAIRABLE', 'CERTIFICATE OF DESTRUCTION'
+        ]
+        
+        # Check if title contains any problematic keywords
+        for status in problematic_statuses:
+            if status in title_status_upper:
+                return False, f"Vehicles with {title_status} titles are not eligible for Turo"
+        
+        # If title status is explicitly "Clean" or doesn't contain problematic keywords
+        return True, f"Title status: {title_status} (eligible)"
+    
     def check_full_eligibility(self, vehicle_info: Dict, mileage: int) -> Dict:
         """Perform complete eligibility check"""
         make = vehicle_info.get('make', '')
         model = vehicle_info.get('model', '')
         year = vehicle_info.get('year')
+        title_status = vehicle_info.get('title_status', 'Clean')
         
         # Individual checks
         age_eligible, age_reason = self.check_age_eligibility(year)
         mileage_eligible, mileage_reason = self.check_mileage_eligibility(mileage)
         make_model_eligible, make_model_reason = self.check_make_model_eligibility(make, model)
+        title_eligible, title_reason = self.check_title_status_eligibility(title_status)
         
-        # Overall eligibility
-        overall_eligible = age_eligible and mileage_eligible and make_model_eligible
+        # Overall eligibility - ALL checks must pass
+        overall_eligible = age_eligible and mileage_eligible and make_model_eligible and title_eligible
         
         # Prepare reasons
         reasons = []
@@ -89,6 +114,8 @@ class TuroEligibilityChecker:
             reasons.append(mileage_reason)
         if not make_model_eligible:
             reasons.append(make_model_reason)
+        if not title_eligible:
+            reasons.append(title_reason)
         
         if overall_eligible:
             reasons = ["✅ Vehicle meets all Turo eligibility requirements!"]
@@ -99,6 +126,7 @@ class TuroEligibilityChecker:
             'details': {
                 'age_check': {'passed': age_eligible, 'reason': age_reason},
                 'mileage_check': {'passed': mileage_eligible, 'reason': mileage_reason},
-                'make_model_check': {'passed': make_model_eligible, 'reason': make_model_reason}
+                'make_model_check': {'passed': make_model_eligible, 'reason': make_model_reason},
+                'title_check': {'passed': title_eligible, 'reason': title_reason}
             }
         }

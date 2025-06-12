@@ -105,6 +105,14 @@
                                     <span>{{ eligibility_result.details.make_model_check.reason }}</span>
                                 </div>
                             </div>
+
+                            <div class="check-item">
+                                <span class="check-icon">{{ '✅' if eligibility_result.details.title_check.passed else '❌' }}</span>
+                                <div class="check-content">
+                                    <strong>Title Status:</strong>
+                                    <span>{{ eligibility_result.details.title_check.reason }}</span>
+                                </div>
+                            </div>
                         </div>
 
                         {% if not eligibility_result.eligible %}
