@@ -19,9 +19,8 @@
     </header>
 
     <main class="main-content">
-        <div class="content-grid">
-            <div class="content-left">
-                <div class="result-content">
+        <div class="result-container">
+            <div class="result-content">
                     <div class="vehicle-info">
                         <h2>Vehicle Information</h2>
                         <div class="info-card">
@@ -120,7 +119,10 @@
                         {% endif %}
 
                         <div class="action-buttons">
-                            <a href="{{ url_for('index') }}" class="btn-secondary">Check Another Vehicle</a>
+                            <a href="{{ url_for('index') }}" class="btn-secondary">
+                                <span>🔍</span>
+                                <span>Check Another Vehicle</span>
+                            </a>
                             {% if eligibility_result.eligible %}
                                 {% if earnings_estimate %}
                                     <div class="earnings-highlight">
@@ -128,23 +130,6 @@
                                         <p class="earnings-amount">${{ earnings_estimate }}/month on Turo</p>
                                     </div>
                                 {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-right">
-                <div class="illustration">
-                    <div class="result-illustration {{ 'success' if eligibility_result.eligible else 'error' }}">
-                        <div class="result-icon">
-                            {{ '🎉' if eligibility_result.eligible else '🚫' }}
-                        </div>
-                        <div class="result-text">
-                            {% if eligibility_result.eligible %}
-                                Ready to earn!
-                            {% else %}
-                                Not quite ready
                             {% endif %}
                         </div>
                     </div>

@@ -450,6 +450,35 @@ body {
     color: white;
 }
 
+/* Enhanced Check Another Vehicle Button */
+.action-buttons .btn-secondary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.action-buttons .btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.action-buttons .btn-secondary:active {
+    transform: translateY(0);
+}
+
 /* Result illustration */
 .result-illustration {
     width: 300px;
@@ -1849,4 +1878,15 @@ body {
 
 .title-icon {
     font-size: 1.1rem;
+}
+
+/* Centered Result Layout */
+.result-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 70vh;
+    padding: 2rem;
 }
